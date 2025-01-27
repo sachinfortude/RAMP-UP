@@ -1,4 +1,4 @@
-import { GraphQLDateTimeISO } from 'graphql-scalars';
+import { GraphQLDateTimeISO, GraphQLDate } from 'graphql-scalars';
 import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
@@ -15,6 +15,6 @@ export class UpdateStudentInput {
   @Field()
   email: string;
 
-  @Field(() => GraphQLDateTimeISO)
+  @Field(() => GraphQLDate)
   dateOfBirth: Date;
 }

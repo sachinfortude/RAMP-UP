@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { GraphQLDateTimeISO } from 'graphql-scalars';
+import { GraphQLDateTimeISO, GraphQLDate } from 'graphql-scalars';
 
 @ObjectType()
 @Entity()
@@ -27,7 +27,7 @@ export class Student {
   @Column()
   email: string;
 
-  @Field(() => GraphQLDateTimeISO)
+  @Field(() => GraphQLDate)
   @Column()
   dateOfBirth: Date;
 
