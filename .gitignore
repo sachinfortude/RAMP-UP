@@ -1,0 +1,63 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node modules
+node_modules/
+
+# Dependency directories
+bower_components/
+jspm_packages/
+
+# Build output
+dist/
+build/
+out-tsc/
+
+# Angular specific
+.angular/
+.angular-cache/
+coverage/
+src/**/*.ngfactory.ts
+src/**/*.ngsummary.json
+src/**/*.ngstyle.ts
+
+# NestJS specific
+/tmp
+/logs
+/test-results
+.hmr/
+
+# Environment files
+*.env
+*.env.*
+
+# IDE and editor files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.swp
+*.tmp
+*.bak
+*.old
+
+# Compiled output
+*.tsbuildinfo
+
+# Git hooks
+.husky/
+
+# Optional npm cache directory
+.npm/
