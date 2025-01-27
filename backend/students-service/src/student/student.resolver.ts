@@ -9,27 +9,34 @@ export class StudentResolver {
   constructor(private readonly studentService: StudentService) {}
 
   @Mutation(() => Student)
-  createStudent(@Args('createStudentInput') createStudentInput: CreateStudentInput) {
+  createStudent(
+    @Args('createStudentInput') createStudentInput: CreateStudentInput,
+  ) {
     return this.studentService.create(createStudentInput);
   }
 
-  @Query(() => [Student], { name: 'student' })
+  @Query(() => [Student], { name: 'getAllStudents' })
   findAll() {
     return this.studentService.findAll();
   }
 
-  @Query(() => Student, { name: 'student' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => Student, { name: 'getStudentById' })
+  findOne(@Args('id') id: string) {
     return this.studentService.findOne(id);
   }
 
   @Mutation(() => Student)
-  updateStudent(@Args('updateStudentInput') updateStudentInput: UpdateStudentInput) {
-    return this.studentService.update(updateStudentInput.id, updateStudentInput);
+  updateStudent(
+    @Args('updateStudentInput') updateStudentInput: UpdateStudentInput,
+  ) {
+    return this.studentService.update(
+      updateStudentInput.id,
+      updateStudentInput,
+    );
   }
 
   @Mutation(() => Student)
-  removeStudent(@Args('id', { type: () => Int }) id: number) {
+  removeStudent(@Args('id') id: string) {
     return this.studentService.remove(id);
   }
 }

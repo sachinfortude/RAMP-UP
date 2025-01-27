@@ -1,8 +1,20 @@
-import { CreateStudentInput } from './create-student.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
+import { GraphQLDateTimeISO } from 'graphql-scalars';
+import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
-export class UpdateStudentInput extends PartialType(CreateStudentInput) {
-  @Field(() => Int)
-  id: number;
+export class UpdateStudentInput {
+  @Field()
+  id: string;
+
+  @Field()
+  firstName: string;
+
+  @Field()
+  lastName: string;
+
+  @Field()
+  email: string;
+
+  @Field(() => GraphQLDateTimeISO)
+  dateOfBirth: Date;
 }
