@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCourseInput } from './dto/create-course.input';
@@ -17,19 +17,45 @@ export class CourseService {
     return this.courseRepository.save(course);
   }
 
-  findAll() {
-    return `This action returns all course`;
+  findAll(): Promise<Course[]> {
+    return this.courseRepository.find();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} course`;
+  async findOne(id: string): Promise<Course> {
+    const course = await this.courseRepository.findOne({ where: { id } });
+
+    if (!course) {
+      throw new NotFoundException(`Record cannot find by id ${id}`);
+    }
+
+    return course;
   }
 
-  update(id: string, updateCourseInput: UpdateCourseInput) {
-    return `This action updates a #${id} course`;
+  async update(
+    id: string,
+    updateCourseInput: UpdateCourseInput,
+  ): Promise<Course> {
+    let course = await this.courseRepository.findOne({ where: { id } });
+
+    if (!course) {
+      throw new NotFoundException(`Record cannot find by id ${id}`);
+    }
+
+    course.name = updateCourseInput.name;
+    course.description = updateCourseInput.description;
+    course.credits = updateCourseInput.credits;
+
+    return this.courseRepository.save(course);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} course`;
+  async remove(id: string): Promise<Course> {
+    let course = await this.courseRepository.findOne({ where: { id } });
+
+    if (!course) {
+      throw new NotFoundException(`Record cannot find by id ${id}`);
+    }
+
+    this.courseRepository.remove(course);
+    return course;
   }
 }

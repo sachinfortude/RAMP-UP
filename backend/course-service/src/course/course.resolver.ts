@@ -15,12 +15,12 @@ export class CourseResolver {
     return this.courseService.create(createCourseInput);
   }
 
-  @Query(() => [Course], { name: 'course' })
+  @Query(() => [Course], { name: 'getAllCourses' })
   findAll() {
     return this.courseService.findAll();
   }
 
-  @Query(() => Course, { name: 'course' })
+  @Query(() => Course, { name: 'getCourseById' })
   findOne(@Args('id') id: string) {
     return this.courseService.findOne(id);
   }
