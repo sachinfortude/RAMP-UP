@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
+import { ObjectType, Field, Int, ID, Directive } from '@nestjs/graphql';
 import {
   Column,
   CreateDateColumn,
@@ -8,9 +8,10 @@ import {
 } from 'typeorm';
 
 @ObjectType()
+@Directive('@key(fields: "id")')
 @Entity({ name: 'courses' })
 export class Course {
-  @Field()
+  @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int, ID, Directive } from '@nestjs/graphql';
 import {
   Column,
   CreateDateColumn,
@@ -7,11 +7,13 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { GraphQLDateTimeISO, GraphQLDate } from 'graphql-scalars';
+import { Course } from './course.entity';
 
 @ObjectType()
-@Entity()
+@Directive('@key(fields: "id")')
+@Entity({ name: 'students' })
 export class Student {
-  @Field()
+  @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -36,6 +38,13 @@ export class Student {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @Field()
+  @Column()
+  courseId: string;
+
+  @Field(() => Course)
+  course: Course;
 
   // Virtual column to calculate age
   get age(): number {

@@ -45,6 +45,7 @@ export class StudentService {
     student.lastName = updateStudentInput.lastName;
     student.dateOfBirth = updateStudentInput.dateOfBirth;
     student.email = updateStudentInput.email;
+    student.courseId = updateStudentInput.courseId;
 
     return this.studentsRepository.save(student);
   }
@@ -58,5 +59,13 @@ export class StudentService {
 
     this.studentsRepository.remove(student);
     return student;
+  }
+
+  async forCourse(courseId: string): Promise<Student[]> {
+    return await this.studentsRepository.find({
+      where: {
+        courseId,
+      },
+    });
   }
 }

@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 type Course {
-  id: String!
+  id: ID!
   name: String!
   description: String
   credits: Int!

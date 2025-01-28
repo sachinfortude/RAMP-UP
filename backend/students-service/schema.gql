@@ -2,12 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Course {
+  id: ID!
+  students: [Student!]
+}
+
 type Student {
-  id: String!
+  id: ID!
   firstName: String!
   lastName: String!
   email: String!
   dateOfBirth: Date!
+  courseId: String!
+  course: Course!
 }
 
 """
@@ -31,6 +38,7 @@ input CreateStudentInput {
   lastName: String!
   email: String!
   dateOfBirth: Date!
+  courseId: String!
 }
 
 input UpdateStudentInput {
@@ -39,4 +47,5 @@ input UpdateStudentInput {
   lastName: String!
   email: String!
   dateOfBirth: Date!
+  courseId: String!
 }

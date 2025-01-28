@@ -17,4 +17,7 @@ export class UpdateStudentInput {
 
   @Field(() => GraphQLDate)
   dateOfBirth: Date;
+
+  @Field()
+  courseId: string;
 }

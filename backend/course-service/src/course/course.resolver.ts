@@ -1,4 +1,11 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ResolveReference,
+} from '@nestjs/graphql';
 import { CourseService } from './course.service';
 import { Course } from './entities/course.entity';
 import { CreateCourseInput } from './dto/create-course.input';
@@ -35,5 +42,10 @@ export class CourseResolver {
   @Mutation(() => Course)
   removeCourse(@Args('id') id: string) {
     return this.courseService.remove(id);
+  }
+
+  @ResolveReference()
+  resolveReference(reference: { __typename: string; id: string }) {
+    return this.courseService.findOne(reference.id);
   }
 }
