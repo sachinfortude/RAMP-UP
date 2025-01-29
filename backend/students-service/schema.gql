@@ -22,9 +22,20 @@ A date string, such as 2007-12-03, compliant with the `full-date` format outline
 """
 scalar Date
 
+type PaginatedStudents {
+  students: [Student!]!
+  totalRecords: Int!
+  totalPages: Int!
+}
+
 type Query {
-  getAllStudents: [Student!]!
+  getAllStudents(paginationInput: PaginationInput!): PaginatedStudents!
   getStudentById(id: String!): Student!
+}
+
+input PaginationInput {
+  page: Int! = 1
+  limit: Int! = 10
 }
 
 type Mutation {

@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { CreateStudentInput } from './dto/create-student.input';
 import { UpdateStudentInput } from './dto/update-student.input';
 import { Student } from './entities/student.entity';
+import { PaginationInput } from './dto/pagination.input';
+import { PaginatedStudents } from './dto/paginated.output';
 
 @Injectable()
 export class StudentService {
@@ -17,8 +19,22 @@ export class StudentService {
     return this.studentsRepository.save(student);
   }
 
-  findAll(): Promise<Student[]> {
-    return this.studentsRepository.find();
+  async findAll(paginationInput: PaginationInput): Promise<PaginatedStudents> {
+    const { page, limit } = paginationInput;
+    const skip = (page - 1) * limit;
+
+    const [students, totalRecords] = await this.studentsRepository.findAndCount(
+      {
+        skip,
+        take: limit,
+      },
+    );
+
+    return {
+      students,
+      totalRecords,
+      totalPages: Math.ceil(totalRecords / limit),
+    };
   }
 
   async findOne(id: string): Promise<Student | null> {

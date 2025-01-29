@@ -11,6 +11,8 @@ import { Student } from './entities/student.entity';
 import { CreateStudentInput } from './dto/create-student.input';
 import { UpdateStudentInput } from './dto/update-student.input';
 import { Course } from './entities/course.entity';
+import { PaginationInput } from './dto/pagination.input';
+import { PaginatedStudents } from './dto/paginated.output';
 
 @Resolver(() => Student)
 export class StudentResolver {
@@ -23,9 +25,11 @@ export class StudentResolver {
     return this.studentService.create(createStudentInput);
   }
 
-  @Query(() => [Student], { name: 'getAllStudents' })
-  findAll() {
-    return this.studentService.findAll();
+  @Query(() => PaginatedStudents, { name: 'getAllStudents' })
+  async findAll(
+    @Args('paginationInput') paginationInput: PaginationInput,
+  ): Promise<PaginatedStudents> {
+    return this.studentService.findAll(paginationInput);
   }
 
   @Query(() => Student, { name: 'getStudentById' })
