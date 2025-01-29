@@ -1,0 +1,18 @@
+<kendo-grid [data]="students">
+    <kendo-grid-column field="firstName" title="Name">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            {{dataItem.firstName }} {{dataItem.lastName}}
+        </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="email" title="Email"> </kendo-grid-column>
+    <kendo-grid-column field="dateOfBirth" title="Date of Birth">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            {{dataItem.dateOfBirth | date: "yyyy-MM-dd":"UTC"}}
+        </ng-template>
+     </kendo-grid-column>
+    <kendo-grid-column field="dateOfBirth" title="Age">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            {{dataItem.dateOfBirth | age }}
+        </ng-template>
+    </kendo-grid-column>
+</kendo-grid>

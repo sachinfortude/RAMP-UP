@@ -1,16 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { KENDO_BUTTONS } from '@progress/kendo-angular-buttons';
+import { StudentsComponent } from './features/students/students.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, KENDO_BUTTONS],
+  imports: [StudentsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent {
-  public onButtonClick(): void {
-    console.log('click');
-    alert('Kendo Angular UI Button was clicked.');
-  }
-}
+export class AppComponent {}
