@@ -30,6 +30,7 @@ export class StudentsService {
             }
           }
       `,
+        fetchPolicy: 'no-cache', // 🔥 Forces a fresh API request every time
       })
       .valueChanges.pipe(
         map((res) => {

@@ -46,6 +46,7 @@ export class StudentsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res: GridDataResult) => {
           this.students = res;
+          console.log(this.students);
         },
         error: (err) =>
           console.log('Error occured during fetching students', err),
@@ -96,7 +97,6 @@ export class StudentsComponent implements OnInit, OnDestroy {
   }
 
   public saveHandler({ sender, rowIndex, formGroup, isNew }: SaveEvent): void {
-    console.log('saving...');
     if (isNew) {
       const reqBody: CreateStudentInput = {
         firstName: formGroup.value.firstName,
@@ -108,7 +108,7 @@ export class StudentsComponent implements OnInit, OnDestroy {
       this.studentsService.createStudent(reqBody).subscribe({
         next: (res) => {
           console.log('Student created successfully', res);
-          window.location.reload();
+          this.fetchStudents();
         },
         error: (err) => {
           console.log('Error occurred during creating the student', err);
@@ -126,7 +126,7 @@ export class StudentsComponent implements OnInit, OnDestroy {
       this.studentsService.updateStudent(reqBody).subscribe({
         next: (res) => {
           console.log('Student updated successfully', res);
-          window.location.reload();
+          this.fetchStudents();
         },
         error: (err) => {
           console.log('Error occurred during updating the student', err);
@@ -141,7 +141,7 @@ export class StudentsComponent implements OnInit, OnDestroy {
     this.studentsService.removeStudent(args.dataItem.id).subscribe({
       next: (res) => {
         console.log('Student deleted successfully', res);
-        window.location.reload();
+        this.fetchStudents();
       },
       error: (err) => {
         console.log('Error occurred during deleting the student', err);
