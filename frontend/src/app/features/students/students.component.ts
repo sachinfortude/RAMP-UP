@@ -17,7 +17,6 @@ import { GridDataResult } from '@progress/kendo-angular-grid';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CreateStudentInput } from '../../shared/models/create-student-model';
 import { UpdateStudentInput } from '../../shared/models/update-student-model';
-import { State } from '@progress/kendo-data-query';
 
 @Component({
   selector: 'app-students',
@@ -109,6 +108,7 @@ export class StudentsComponent implements OnInit, OnDestroy {
       this.studentsService.createStudent(reqBody).subscribe({
         next: (res) => {
           console.log('Student created successfully', res);
+          window.location.reload();
         },
         error: (err) => {
           console.log('Error occurred during creating the student', err);
@@ -126,6 +126,7 @@ export class StudentsComponent implements OnInit, OnDestroy {
       this.studentsService.updateStudent(reqBody).subscribe({
         next: (res) => {
           console.log('Student updated successfully', res);
+          window.location.reload();
         },
         error: (err) => {
           console.log('Error occurred during updating the student', err);
@@ -140,6 +141,7 @@ export class StudentsComponent implements OnInit, OnDestroy {
     this.studentsService.removeStudent(args.dataItem.id).subscribe({
       next: (res) => {
         console.log('Student deleted successfully', res);
+        window.location.reload();
       },
       error: (err) => {
         console.log('Error occurred during deleting the student', err);
