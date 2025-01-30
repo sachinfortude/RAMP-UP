@@ -1,4 +1,4 @@
-<kendo-grid [data]="students">
+<kendo-grid [data]="students" [pageable]="true" [pageSize]="pageSize" [skip]="skip" (pageChange)="pageChange($event)" >
     <kendo-grid-column field="firstName" title="Name">
         <ng-template kendoGridCellTemplate let-dataItem>
             {{dataItem.firstName }} {{dataItem.lastName}}

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map, Observable } from 'rxjs';
 import { GetStudentsResponse, Student } from '../../shared/models/student';
+import { GridDataResult } from '@progress/kendo-angular-grid';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,7 @@ import { GetStudentsResponse, Student } from '../../shared/models/student';
 export class StudentsService {
   constructor(private readonly apollo: Apollo) {}
 
-  getStudents(page: number, limit: number): Observable<Student[]> {
+  getStudents(page: number, limit: number): Observable<GridDataResult> {
     return this.apollo
       .watchQuery<GetStudentsResponse>({
         query: gql`
@@ -30,7 +31,10 @@ export class StudentsService {
       })
       .valueChanges.pipe(
         map((res) => {
-          return res.data.getAllStudents.students;
+          return {
+            data: res.data.getAllStudents.students,
+            total: res.data.getAllStudents.totalRecords,
+          };
         })
       );
   }
