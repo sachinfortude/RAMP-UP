@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AddEvent,
@@ -20,7 +19,7 @@ import { UpdateStudentInput } from '../../shared/models/update-student-model';
 
 @Component({
   selector: 'app-students',
-  imports: [KENDO_GRID, DatePipe, AgePipe],
+  imports: [KENDO_GRID, AgePipe],
   templateUrl: './students.component.html',
   styleUrl: './students.component.css',
 })

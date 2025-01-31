@@ -16,11 +16,12 @@
   <kendo-grid-column field="firstName" title="First Name"></kendo-grid-column>
   <kendo-grid-column field="lastName" title="Last Name"></kendo-grid-column>
   <kendo-grid-column field="email" title="Email"> </kendo-grid-column>
-  <kendo-grid-column field="dateOfBirth" title="Date of Birth">
-    <ng-template kendoGridCellTemplate let-dataItem>
-      {{ dataItem.dateOfBirth | date : "yyyy-MM-dd" : "UTC" }}
-    </ng-template>
-  </kendo-grid-column>
+  <kendo-grid-column
+    field="dateOfBirth"
+    title="Date of Birth"
+    editor="date"
+    format="yyyy/MM/dd"
+  ></kendo-grid-column>
   <kendo-grid-column field="dateOfBirth" title="Age" [editable]="false">
     <ng-template kendoGridCellTemplate let-dataItem>
       {{ dataItem.dateOfBirth | age }}

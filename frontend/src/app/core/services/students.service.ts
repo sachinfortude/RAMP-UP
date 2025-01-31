@@ -35,7 +35,10 @@ export class StudentsService {
       .valueChanges.pipe(
         map((res) => {
           return {
-            data: res.data.getAllStudents.students,
+            data: res.data.getAllStudents.students.map((student) => ({
+              ...student,
+              dateOfBirth: new Date(student.dateOfBirth), // Convert to JS Date object
+            })),
             total: res.data.getAllStudents.totalRecords,
           };
         })
