@@ -141,7 +141,13 @@ export class StudentsComponent implements OnInit, OnDestroy {
     this.studentsService.removeStudent(args.dataItem.id).subscribe({
       next: (res) => {
         console.log('Student deleted successfully', res);
-        this.fetchStudents();
+        // this.fetchStudents();
+        this.students = {
+          data: this.students.data.filter(
+            (student) => student.id !== args.dataItem.id
+          ),
+          total: this.students.total - 1,
+        };
       },
       error: (err) => {
         console.log('Error occurred during deleting the student', err);

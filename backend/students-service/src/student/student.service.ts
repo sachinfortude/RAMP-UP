@@ -27,6 +27,9 @@ export class StudentService {
       {
         skip,
         take: limit,
+        order: {
+          createdAt: 'DESC',
+        },
       },
     );
 
