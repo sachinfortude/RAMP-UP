@@ -10,6 +10,7 @@ import { StudentModule } from './student/student.module';
 import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Course } from './student/entities/course.entity';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -29,6 +30,12 @@ import { Course } from './student/entities/course.entity';
       database: 'studentsDb',
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: true,
+    }),
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
     }),
     StudentModule,
   ],
