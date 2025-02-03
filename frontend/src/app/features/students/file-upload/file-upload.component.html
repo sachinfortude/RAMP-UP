@@ -1,0 +1,15 @@
+<div class="file-upload-container">
+  <span>Upload Student Data</span>
+  <div>
+    <input type="file" (change)="onFileSelected($event)" accept=".xlsx" />
+  </div>
+  <button
+    kendoButton
+    themeColor="primary"
+    type="button"
+    (click)="uploadFile()"
+    [disabled]="!selectedFile"
+  >
+    Upload
+  </button>
+</div>

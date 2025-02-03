@@ -5,12 +5,21 @@ import { GetStudentsResponse, Student } from '../../shared/models/student';
 import { GridDataResult } from '@progress/kendo-angular-grid';
 import { CreateStudentInput } from '../../shared/models/create-student-model';
 import { UpdateStudentInput } from '../../shared/models/update-student-model';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StudentsService {
-  constructor(private readonly apollo: Apollo) {}
+  private fileUploadURL = 'http://localhost:3000';
+
+  constructor(private readonly apollo: Apollo, private http: HttpClient) {}
+
+  importStudents(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`${this.fileUploadURL}/student/import`, formData);
+  }
 
   getStudents(page: number, limit: number): Observable<GridDataResult> {
     return this.apollo
