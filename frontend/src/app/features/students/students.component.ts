@@ -16,6 +16,7 @@ import { GridDataResult } from '@progress/kendo-angular-grid';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CreateStudentInput } from '../../shared/models/create-student-model';
 import { UpdateStudentInput } from '../../shared/models/update-student-model';
+import { WebsocketService } from '../../core/services/websocket.service';
 
 @Component({
   selector: 'app-students',
@@ -30,12 +31,24 @@ export class StudentsComponent implements OnInit, OnDestroy {
   skip = 0;
 
   private getStudentsSubscription?: Subscription;
+  private jobCompletedSubscription?: Subscription;
   private editedRowIndex?: number;
 
-  constructor(private studentsService: StudentsService) {}
+  constructor(
+    private studentsService: StudentsService,
+    private websocketService: WebsocketService
+  ) {}
 
   ngOnInit(): void {
     this.fetchStudents();
+
+    // Subscribe to WebSocket event when a job is completed
+    this.jobCompletedSubscription = this.websocketService
+      .onJobCompleted()
+      .subscribe((message) => {
+        console.log('Job Completed:', message);
+        this.fetchStudents(); // Automatically refresh the grid when new students are added
+      });
   }
 
   public fetchStudents() {
@@ -164,5 +177,6 @@ export class StudentsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.getStudentsSubscription?.unsubscribe();
+    this.jobCompletedSubscription?.unsubscribe(); // Unsubscribe to prevent memory leaks
   }
 }
