@@ -26,7 +26,7 @@ import { UpdateStudentInput } from '../../shared/models/update-student-model';
 export class StudentsComponent implements OnInit, OnDestroy {
   public students: GridDataResult = { data: [], total: 0 };
   public formGroup?: FormGroup;
-  pageSize = 5;
+  pageSize = 10;
   skip = 0;
 
   private getStudentsSubscription?: Subscription;
