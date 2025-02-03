@@ -7,6 +7,7 @@ import { CourseResolver } from './course.resolver';
 import { StudentController } from './student.controller';
 import { BullModule } from '@nestjs/bullmq';
 import { StudentImportProcessor } from './student-import.processor';
+import { StudentGateway } from './student.gateway';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { StudentImportProcessor } from './student-import.processor';
     StudentService,
     CourseResolver,
     StudentImportProcessor,
+    StudentGateway,
   ],
   controllers: [StudentController],
 })

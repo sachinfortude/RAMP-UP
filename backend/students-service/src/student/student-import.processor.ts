@@ -3,10 +3,14 @@ import { StudentService } from './student.service';
 import { Job } from 'bullmq';
 import * as xlsx from 'xlsx';
 import { CreateStudentInput } from './dto/create-student.input';
+import { StudentGateway } from './student.gateway';
 
 @Processor('student-import')
 export class StudentImportProcessor extends WorkerHost {
-  constructor(private readonly studentsService: StudentService) {
+  constructor(
+    private readonly studentsService: StudentService,
+    private readonly studentGateway: StudentGateway,
+  ) {
     super();
   }
 
@@ -33,8 +37,10 @@ export class StudentImportProcessor extends WorkerHost {
       }
 
       console.log('Students data imported successfully from the file');
+      this.studentGateway.notifyJobCompleted('Students imported successfully!');
     } catch (error) {
       console.log('Error occured importing students from file.', error.message);
+      this.studentGateway.notifyJobFailed('Student import failed!');
       throw error; // Retry the Job
     }
   }

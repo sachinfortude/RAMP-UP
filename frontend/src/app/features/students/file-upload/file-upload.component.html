@@ -8,7 +8,7 @@
     themeColor="primary"
     type="button"
     (click)="uploadFile()"
-    [disabled]="!selectedFile"
+    [disabled]="!selectedFile || isImporting"
   >
     Upload
   </button>
