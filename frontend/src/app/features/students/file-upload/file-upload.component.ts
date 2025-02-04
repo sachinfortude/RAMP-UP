@@ -5,10 +5,12 @@ import { Subscription } from 'rxjs';
 import { WebsocketService } from '../../../core/services/websocket.service';
 import { KENDO_NOTIFICATION } from '@progress/kendo-angular-notification';
 import { NotificationService } from '@progress/kendo-angular-notification';
+import { KENDO_INDICATORS } from '@progress/kendo-angular-indicators';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-file-upload',
-  imports: [KENDO_BUTTONS, KENDO_NOTIFICATION],
+  imports: [KENDO_BUTTONS, KENDO_NOTIFICATION, KENDO_INDICATORS, NgIf],
   templateUrl: './file-upload.component.html',
   styleUrl: './file-upload.component.css',
 })

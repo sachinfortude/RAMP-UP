@@ -3,13 +3,19 @@
   <div>
     <input type="file" (change)="onFileSelected($event)" accept=".xlsx" />
   </div>
-  <button
-    kendoButton
-    themeColor="primary"
-    type="button"
-    (click)="uploadFile()"
-    [disabled]="!selectedFile || isImporting"
-  >
-    Upload
-  </button>
+  <div class="btn-container">
+    <button
+      kendoButton
+      themeColor="primary"
+      type="button"
+      (click)="uploadFile()"
+      [disabled]="!selectedFile || isImporting"
+    >
+      <!-- <kendo-loader *ngIf="isImporting" size="small" themeColor="secondary">
+      </kendo-loader> -->
+      Upload
+    </button>
+    <kendo-loader *ngIf="isImporting" size="medium" themeColor="primary">
+    </kendo-loader>
+  </div>
 </div>

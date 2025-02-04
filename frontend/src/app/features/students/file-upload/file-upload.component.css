@@ -13,3 +13,9 @@ input[type="file"]{
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+.btn-container {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
