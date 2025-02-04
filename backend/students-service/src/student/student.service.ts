@@ -19,9 +19,15 @@ export class StudentService {
   ) {}
 
   async createStudentImportJob(file: Express.Multer.File) {
-    const job = await this.studentImportQueue.add('importStudents', {
-      file: file,
-    });
+    const job = await this.studentImportQueue.add(
+      'importStudents',
+      {
+        file: file,
+      },
+      {
+        attempts: 3,
+      },
+    );
     return job;
   }
 
