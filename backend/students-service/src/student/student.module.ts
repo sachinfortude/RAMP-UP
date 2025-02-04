@@ -8,11 +8,17 @@ import { StudentController } from './student.controller';
 import { BullModule } from '@nestjs/bullmq';
 import { StudentImportProcessor } from './student-import.processor';
 import { StudentGateway } from './student.gateway';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Student]),
     BullModule.registerQueue({ name: 'student-import' }),
+    BullBoardModule.forFeature({
+      name: 'student-import',
+      adapter: BullMQAdapter,
+    }),
   ],
   providers: [
     StudentResolver,
