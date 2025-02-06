@@ -115,7 +115,7 @@ export class StudentsComponent implements OnInit, OnDestroy {
         lastName: formGroup.value.lastName,
         email: formGroup.value.email,
         dateOfBirth: formGroup.value.dateOfBirth,
-        courseId: '35558825-6635-4860-94e1-b977dc30c475',
+        courseId: 'da44b53a-13f0-4fb9-be1c-caad4fdb142d',
       };
       this.studentsService.createStudent(reqBody).subscribe({
         next: (res) => {
@@ -133,7 +133,7 @@ export class StudentsComponent implements OnInit, OnDestroy {
         lastName: formGroup.value.lastName,
         email: formGroup.value.email,
         dateOfBirth: formGroup.value.dateOfBirth,
-        courseId: '35558825-6635-4860-94e1-b977dc30c475',
+        courseId: 'da44b53a-13f0-4fb9-be1c-caad4fdb142d',
       };
       this.studentsService.updateStudent(reqBody).subscribe({
         next: (res) => {
