@@ -29,9 +29,8 @@ export class StudentsComponent implements OnInit, OnDestroy {
   public formGroup?: FormGroup;
   pageSize = 10;
   skip = 0;
-
-  private getStudentsSubscription?: Subscription;
-  private jobCompletedSubscription?: Subscription;
+  getStudentsSubscription?: Subscription;
+  jobCompletedSubscription?: Subscription;
   private editedRowIndex?: number;
 
   constructor(
