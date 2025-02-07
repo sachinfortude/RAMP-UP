@@ -9,6 +9,8 @@ import {
   RemoveEvent,
   SaveEvent,
 } from '@progress/kendo-angular-grid';
+import { KENDO_DIALOGS } from '@progress/kendo-angular-dialog';
+import { KENDO_BUTTON } from '@progress/kendo-angular-buttons';
 import { AgePipe } from '../../shared/pipes/age.pipe';
 import { Subscription } from 'rxjs';
 import { StudentsService } from '../../core/services/students.service';
@@ -24,16 +26,19 @@ import {
 import { CreateStudentInput } from '../../shared/models/create-student-model';
 import { UpdateStudentInput } from '../../shared/models/update-student-model';
 import { WebsocketService } from '../../core/services/websocket.service';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-students',
-  imports: [KENDO_GRID, AgePipe],
+  imports: [KENDO_GRID, AgePipe, KENDO_DIALOGS, NgIf, KENDO_BUTTON],
   templateUrl: './students.component.html',
   styleUrl: './students.component.css',
 })
 export class StudentsComponent implements OnInit, OnDestroy {
   public students: GridDataResult = { data: [], total: 0 };
   public formGroup?: FormGroup;
+  public isDialogOpened = false;
+  public removeStudentId?: string;
   pageSize = 10;
   skip = 0;
   getStudentsSubscription?: Subscription;
@@ -162,21 +167,8 @@ export class StudentsComponent implements OnInit, OnDestroy {
   }
 
   public removeHandler(args: RemoveEvent): void {
-    this.studentsService.removeStudent(args.dataItem.id).subscribe({
-      next: (res) => {
-        console.log('Student deleted successfully', res);
-        // this.fetchStudents();
-        this.students = {
-          data: this.students.data.filter(
-            (student) => student.id !== args.dataItem.id
-          ),
-          total: this.students.total - 1,
-        };
-      },
-      error: (err) => {
-        console.log('Error occurred during deleting the student', err);
-      },
-    });
+    this.isDialogOpened = true;
+    this.removeStudentId = args.dataItem.id;
   }
 
   private closeEditor(grid: GridComponent, rowIndex = this.editedRowIndex) {
@@ -185,6 +177,33 @@ export class StudentsComponent implements OnInit, OnDestroy {
     // reset the helpers
     this.editedRowIndex = undefined;
     this.formGroup = undefined;
+  }
+
+  public closeDialog(status: string): void {
+    console.log(`Dialog result: ${status}`);
+    this.isDialogOpened = false;
+    if (status === 'yes' && this.removeStudentId) {
+      this.removeStudent(this.removeStudentId);
+    }
+  }
+
+  private removeStudent(removeStudentId: string) {
+    this.studentsService.removeStudent(removeStudentId).subscribe({
+      next: (res) => {
+        console.log('Student deleted successfully', res);
+        // this.fetchStudents();
+        this.students = {
+          data: this.students.data.filter(
+            (student) => student.id !== removeStudentId
+          ),
+          total: this.students.total - 1,
+        };
+        this.removeStudentId = undefined;
+      },
+      error: (err) => {
+        console.log('Error occurred during deleting the student', err);
+      },
+    });
   }
 
   private futureDateValidator: ValidatorFn = (

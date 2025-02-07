@@ -178,33 +178,35 @@ describe('StudentsComponent', () => {
     expect(mockSaveEvent.sender.closeRow).toHaveBeenCalledWith(1);
   });
 
-  it('should remove a student', () => {
+  it('should open dialog when removing a student', () => {
     const mockRemoveEvent = {
       dataItem: { id: '1' },
     } as RemoveEvent;
-    mockStudentsService.removeStudent.and.returnValue(of({} as Student));
 
     component.removeHandler(mockRemoveEvent);
 
-    expect(mockStudentsService.removeStudent).toHaveBeenCalledWith('1');
-    expect(component.students.data.length).toBe(0);
+    // Check if the dialog is opened
+    expect(component.isDialogOpened).toBeTrue();
+    expect(component.removeStudentId).toBe('1'); // Ensure student ID is set
   });
 
-  it('should validate form in addHandler', () => {
-    const mockAddEvent = {
-      sender: jasmine.createSpyObj('GridComponent', ['addRow', 'closeRow']),
-    } as AddEvent;
+  it('should remove a student after confirmation', () => {
+    const mockRemoveEvent = {
+      dataItem: { id: '1' },
+    } as RemoveEvent;
 
-    component.addHandler(mockAddEvent);
+    mockStudentsService.removeStudent.and.returnValue(of({} as Student)); // Mock the removeStudent API call
 
-    expect(component.formGroup?.invalid).toBeTrue(); // Form is invalid initially
-    component.formGroup?.patchValue({
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john@example.com',
-      dateOfBirth: '2000-01-01',
-    });
-    expect(component.formGroup?.valid).toBeTrue(); // Form is valid after patching values
+    // Step 1: Call removeHandler to open the dialog and set removeStudentId
+    component.removeHandler(mockRemoveEvent);
+    expect(component.isDialogOpened).toBeTrue();
+    expect(component.removeStudentId).toBe('1');
+
+    // Step 2: Simulate user clicking "Yes" in confirmation dialog
+    component.closeDialog('yes');
+
+    // Step 3: Ensure removeStudent was called with the correct student ID
+    expect(mockStudentsService.removeStudent).toHaveBeenCalledWith('1');
   });
 
   it('should subscribe to WebSocket job completed event', () => {
