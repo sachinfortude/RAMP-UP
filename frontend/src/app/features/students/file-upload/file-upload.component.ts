@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { StudentsService } from '../../../core/services/students.service';
 import { KENDO_BUTTONS } from '@progress/kendo-angular-buttons';
 import { Subscription } from 'rxjs';
@@ -15,6 +15,7 @@ import { NgIf } from '@angular/common';
   styleUrl: './file-upload.component.css',
 })
 export class FileUploadComponent implements OnInit, OnDestroy {
+  @ViewChild('fileInput') fileInput: any;
   selectedFile: File | null = null;
   private jobCompletedSub!: Subscription;
   private jobFailedSub!: Subscription;
@@ -27,7 +28,11 @@ export class FileUploadComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Subscribe to job completion event
+    this.subscribeToJobCompletion();
+    this.subscribeToJobFailure();
+  }
+
+  private subscribeToJobCompletion(): void {
     this.jobCompletedSub = this.webSocketService
       .onJobCompleted()
       .subscribe((message) => {
@@ -39,9 +44,11 @@ export class FileUploadComponent implements OnInit, OnDestroy {
           animation: { type: 'fade', duration: 400 },
           type: { style: 'success', icon: true },
         });
+        this.resetFileInput();
       });
+  }
 
-    // Subscribe to job failure event
+  private subscribeToJobFailure(): void {
     this.jobFailedSub = this.webSocketService
       .onJobFailed()
       .subscribe((message) => {
@@ -53,7 +60,15 @@ export class FileUploadComponent implements OnInit, OnDestroy {
           animation: { type: 'fade', duration: 400 },
           type: { style: 'error', icon: true },
         });
+        this.resetFileInput();
       });
+  }
+
+  private resetFileInput(): void {
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = ''; // Clear file input
+      this.selectedFile = null;
+    }
   }
 
   onFileSelected(event: any) {

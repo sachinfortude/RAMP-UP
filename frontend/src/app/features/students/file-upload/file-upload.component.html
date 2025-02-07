@@ -1,7 +1,12 @@
 <div class="file-upload-container">
   <span>Upload Student Data</span>
   <div>
-    <input type="file" (change)="onFileSelected($event)" accept=".xlsx" />
+    <input
+      type="file"
+      #fileInput
+      (change)="onFileSelected($event)"
+      accept=".xlsx"
+    />
   </div>
   <div class="btn-container">
     <button
