@@ -6,12 +6,13 @@ import { GridDataResult } from '@progress/kendo-angular-grid';
 import { CreateStudentInput } from '../../shared/models/create-student-model';
 import { UpdateStudentInput } from '../../shared/models/update-student-model';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StudentsService {
-  private fileUploadURL = 'http://localhost:3000';
+  private fileUploadURL = environment.fileUploadUrl;
 
   constructor(private readonly apollo: Apollo, private http: HttpClient) {}
 
