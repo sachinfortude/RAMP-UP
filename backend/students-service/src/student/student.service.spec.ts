@@ -54,10 +54,7 @@ describe('EmployeeService', () => {
   describe('createStudentImportJob', () => {
     it('should add a job to the student import queue', async () => {
       // 1. Define the input and expected output
-      const file = {
-        originalname: 'students.xlsx',
-        buffer: Buffer.from('mock excel data'),
-      } as Express.Multer.File;
+      const filePath = 'students.xlsx';
 
       const job = { id: 'job-1', name: 'importStudents' };
 
@@ -65,12 +62,12 @@ describe('EmployeeService', () => {
       jest.spyOn(studentImportQueue, 'add').mockResolvedValue(job as any);
 
       // 3. Call the method under test
-      const result = await service.createStudentImportJob(file);
+      const result = await service.createStudentImportJob(filePath);
 
       // 4. Assertions
       expect(studentImportQueue.add).toHaveBeenCalledWith(
         'importStudents',
-        { file },
+        { filePath },
         { attempts: 3 },
       );
       expect(result).toEqual(job);
