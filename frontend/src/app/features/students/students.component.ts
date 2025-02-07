@@ -13,7 +13,14 @@ import { AgePipe } from '../../shared/pipes/age.pipe';
 import { Subscription } from 'rxjs';
 import { StudentsService } from '../../core/services/students.service';
 import { GridDataResult } from '@progress/kendo-angular-grid';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { CreateStudentInput } from '../../shared/models/create-student-model';
 import { UpdateStudentInput } from '../../shared/models/update-student-model';
 import { WebsocketService } from '../../core/services/websocket.service';
@@ -76,7 +83,10 @@ export class StudentsComponent implements OnInit, OnDestroy {
       firstName: new FormControl('', Validators.required),
       lastName: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
-      dateOfBirth: new FormControl('', Validators.required),
+      dateOfBirth: new FormControl('', [
+        Validators.required,
+        this.futureDateValidator,
+      ]),
     });
     // show the new row editor, with the `FormGroup` build above
     args.sender.addRow(this.formGroup);
@@ -95,7 +105,10 @@ export class StudentsComponent implements OnInit, OnDestroy {
         Validators.required,
         Validators.email,
       ]),
-      dateOfBirth: new FormControl(dataItem.dateOfBirth, Validators.required),
+      dateOfBirth: new FormControl(dataItem.dateOfBirth, [
+        Validators.required,
+        this.futureDateValidator,
+      ]),
     });
 
     this.editedRowIndex = args.rowIndex;
@@ -173,6 +186,18 @@ export class StudentsComponent implements OnInit, OnDestroy {
     this.editedRowIndex = undefined;
     this.formGroup = undefined;
   }
+
+  private futureDateValidator: ValidatorFn = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+    const selectedDate = new Date(control.value);
+    const today = new Date();
+
+    if (selectedDate > today) {
+      return { futureDate: true }; // Validation error
+    }
+    return null; // Valid date
+  };
 
   ngOnDestroy(): void {
     this.getStudentsSubscription?.unsubscribe();
