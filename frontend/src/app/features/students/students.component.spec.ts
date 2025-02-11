@@ -13,6 +13,7 @@ import {
 import { of, Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Student } from '../../shared/models/student';
+import { environment } from '../../../environments/environment';
 
 describe('StudentsComponent', () => {
   let component: StudentsComponent;
@@ -172,7 +173,7 @@ describe('StudentsComponent', () => {
       lastName: 'Doe',
       email: 'john@example.com',
       dateOfBirth: '2000-01-01',
-      courseId: 'da44b53a-13f0-4fb9-be1c-caad4fdb142d',
+      courseId: environment.courseId,
     });
     expect(component.fetchStudents).toHaveBeenCalled();
     expect(mockSaveEvent.sender.closeRow).toHaveBeenCalledWith(1);

@@ -27,6 +27,7 @@ import { CreateStudentInput } from '../../shared/models/create-student-model';
 import { UpdateStudentInput } from '../../shared/models/update-student-model';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { NgIf } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-students',
@@ -132,7 +133,7 @@ export class StudentsComponent implements OnInit, OnDestroy {
         lastName: formGroup.value.lastName,
         email: formGroup.value.email,
         dateOfBirth: formGroup.value.dateOfBirth,
-        courseId: 'da44b53a-13f0-4fb9-be1c-caad4fdb142d',
+        courseId: environment.courseId,
       };
       this.studentsService.createStudent(reqBody).subscribe({
         next: (res) => {
@@ -150,7 +151,7 @@ export class StudentsComponent implements OnInit, OnDestroy {
         lastName: formGroup.value.lastName,
         email: formGroup.value.email,
         dateOfBirth: formGroup.value.dateOfBirth,
-        courseId: 'da44b53a-13f0-4fb9-be1c-caad4fdb142d',
+        courseId: environment.courseId,
       };
       this.studentsService.updateStudent(reqBody).subscribe({
         next: (res) => {

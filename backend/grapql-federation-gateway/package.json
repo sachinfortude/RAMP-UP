@@ -24,12 +24,14 @@
     "@apollo/server": "^4.11.3",
     "@nestjs/apollo": "^13.0.2",
     "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.1",
     "@nestjs/graphql": "^13.0.2",
     "@nestjs/platform-express": "^11.0.1",
     "graphql": "^16.10.0",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
