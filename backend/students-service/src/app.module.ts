@@ -12,6 +12,7 @@ import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validateEnv } from './config/env.validation'; // Import the Zod validation function
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
@@ -57,7 +58,7 @@ import { validateEnv } from './config/env.validation'; // Import the Zod validat
     }),
     StudentModule,
   ],
-  controllers: [],
+  controllers: [HealthController],
   providers: [],
 })
 export class AppModule {}

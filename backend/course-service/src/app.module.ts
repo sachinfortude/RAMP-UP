@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CourseModule } from './course/course.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validateEnv } from './config/env.validation';
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
@@ -36,7 +37,7 @@ import { validateEnv } from './config/env.validation';
     }),
     CourseModule,
   ],
-  controllers: [],
+  controllers: [HealthController],
   providers: [],
 })
 export class AppModule {}
