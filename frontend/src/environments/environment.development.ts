@@ -2,5 +2,5 @@ export const environment = {
   production: false,
   apiUrl: 'http://localhost:4000/graphql',
   fileUploadUrl: 'http://localhost:3000',
-  courseId: 'c92114a9-8bf2-4369-ab34-b068f3f9ba69',
+  courseId: '1c3fceff-8b5e-4ed3-afd7-1bc35d09ebac',
 };
