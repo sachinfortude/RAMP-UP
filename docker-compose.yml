@@ -14,6 +14,55 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
+  students-service:
+    container_name: students-service
+    build:
+      context: backend/students-service
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - backend/students-service/.env.production
+    depends_on:
+      - postgres
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      retries: 10
+      start_period: 20s
+      timeout: 5s
+  course-service:
+    container_name: course-service
+    build:
+      context: backend/course-service
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    env_file:
+      - backend/course-service/.env.production
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 10s
+      retries: 10
+      start_period: 20s
+      timeout: 5s
+  grapql-federation-gateway:
+    container_name: grapql-federation-gateway
+    build:
+      context: backend/grapql-federation-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    env_file:
+      - backend/grapql-federation-gateway/.env.production
+    depends_on:
+      students-service:
+        condition: service_healthy
+      course-service:
+        condition: service_healthy
 volumes:
   pgdata:
   redis-data:
