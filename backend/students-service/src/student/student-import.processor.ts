@@ -5,12 +5,15 @@ import * as xlsx from 'xlsx';
 import { CreateStudentInput } from './dto/create-student.input';
 import { StudentGateway } from './student.gateway';
 import * as fs from 'fs';
+import { Logger } from '@nestjs/common';
 
+/*    This processor is responsible for handling the student import job asynchronously.
+      Importing students from a file can be a time-consuming operation.
+      Instead of blocking the HTTP request (causing a delay for the user), the job is processed in the background. 
+*/
 @Processor('student-import')
 export class StudentImportProcessor extends WorkerHost {
-  // This processor is responsible for handling the student import job asynchronously.
-  // Importing students from a file can be a time-consuming operation.
-  // Instead of blocking the HTTP request (causing a delay for the user), the job is processed in the background.
+  private readonly logger = new Logger(StudentImportProcessor.name);
 
   constructor(
     private readonly studentsService: StudentService,
@@ -21,10 +24,10 @@ export class StudentImportProcessor extends WorkerHost {
 
   async process(job: Job, token?: string): Promise<any> {
     const filePath = job.data.filePath;
-    console.log('Processing file:', filePath);
+    this.logger.log(`Processing file: ${filePath}`);
 
     if (!fs.existsSync(filePath)) {
-      console.log('File not found:', filePath);
+      this.logger.log(`File not found: ${filePath}`);
       this.studentGateway.notifyJobFailed(
         'Student import failed: File not found!',
       );
@@ -48,10 +51,10 @@ export class StudentImportProcessor extends WorkerHost {
         };
         await this.studentsService.create(student);
       }
-      console.log('Students data imported successfully');
+      this.logger.log('Students data imported successfully');
       this.studentGateway.notifyJobCompleted('Students imported successfully!');
     } catch (error) {
-      console.log('Error importing students:', error.message);
+      this.logger.log(`Error importing students: ${error.message}`);
       this.studentGateway.notifyJobFailed('Student import failed!');
       throw error; // Retry the job
     }

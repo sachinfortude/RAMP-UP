@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -13,12 +14,14 @@ export class StudentGateway
   @WebSocketServer()
   server: Server;
 
+  private readonly logger = new Logger(StudentGateway.name);
+
   handleConnection(client: any) {
-    console.log('Client connected:', client.id);
+    this.logger.log(`Client connected: ${client.id}`);
   }
 
   handleDisconnect(client: any) {
-    console.log('Client disconnected:', client.id);
+    this.logger.log(`Client disconnected: ${client.id}`);
   }
 
   notifyJobCompleted(message: string) {

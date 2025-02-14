@@ -19,37 +19,55 @@ export class StudentResolver {
   constructor(private readonly studentService: StudentService) {}
 
   @Mutation(() => Student)
-  createStudent(
+  async createStudent(
     @Args('createStudentInput') createStudentInput: CreateStudentInput,
   ) {
-    return this.studentService.create(createStudentInput);
+    try {
+      return await this.studentService.create(createStudentInput);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Query(() => PaginatedStudents, { name: 'getAllStudents' })
-  async findAll(
-    @Args('paginationInput') paginationInput: PaginationInput,
-  ): Promise<PaginatedStudents> {
-    return this.studentService.findAll(paginationInput);
+  async findAll(@Args('paginationInput') paginationInput: PaginationInput) {
+    try {
+      return await this.studentService.findAll(paginationInput);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Query(() => Student, { name: 'getStudentById' })
-  findOne(@Args('id') id: string) {
-    return this.studentService.findOne(id);
+  async findOne(@Args('id') id: string) {
+    try {
+      return await this.studentService.findOne(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Mutation(() => Student)
-  updateStudent(
+  async updateStudent(
     @Args('updateStudentInput') updateStudentInput: UpdateStudentInput,
   ) {
-    return this.studentService.update(
-      updateStudentInput.id,
-      updateStudentInput,
-    );
+    try {
+      return await this.studentService.update(
+        updateStudentInput.id,
+        updateStudentInput,
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Mutation(() => Student)
-  removeStudent(@Args('id') id: string) {
-    return this.studentService.remove(id);
+  async removeStudent(@Args('id') id: string) {
+    try {
+      return await this.studentService.remove(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @ResolveField(() => Course)
