@@ -10,6 +10,7 @@ import { StudentImportProcessor } from './student-import.processor';
 import { StudentGateway } from './student.gateway';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { KafkaModule } from 'src/kafka/kafka.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
       name: 'student-import',
       adapter: BullMQAdapter,
     }),
+    KafkaModule,
   ],
   providers: [
     StudentResolver,

@@ -31,4 +31,8 @@ export class StudentGateway
   notifyJobFailed(message: string) {
     this.server.emit('jobFailed', { message });
   }
+
+  notifyFileReady(filePath: string) {
+    this.server.emit('fileReady', { filePath });
+  }
 }

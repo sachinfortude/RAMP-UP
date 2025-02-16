@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Post,
   UploadedFile,
@@ -20,5 +21,13 @@ export class StudentController {
     } catch (error) {
       throw error;
     }
+  }
+
+  @Post('filter')
+  async filterStudentsByAge(
+    @Body('minAge') minAge: number,
+    @Body('maxAge') maxAge: number,
+  ) {
+    return await this.studentsService.filterStudentsByAge(minAge, maxAge);
   }
 }

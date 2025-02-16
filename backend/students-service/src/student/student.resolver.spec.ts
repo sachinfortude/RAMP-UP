@@ -20,7 +20,7 @@ describe('EmployeeResolver', () => {
           provide: StudentService,
           useValue: {
             create: jest.fn(),
-            findAll: jest.fn(),
+            fetchPaginatedStudents: jest.fn(),
             findOne: jest.fn(),
             update: jest.fn(),
             remove: jest.fn(),
@@ -91,13 +91,17 @@ describe('EmployeeResolver', () => {
       } as PaginatedStudents;
 
       // 2. Mock the service methods
-      jest.spyOn(studentService, 'findAll').mockResolvedValue(expectedResult);
+      jest
+        .spyOn(studentService, 'fetchPaginatedStudents')
+        .mockResolvedValue(expectedResult);
 
       // 3. Call the method under test
       const result = await resolver.findAll(paginationInput);
 
       // 4. Assertions
-      expect(studentService.findAll).toHaveBeenCalledWith(paginationInput);
+      expect(studentService.fetchPaginatedStudents).toHaveBeenCalledWith(
+        paginationInput,
+      );
       expect(result).toEqual(expectedResult);
     });
   });

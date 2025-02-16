@@ -8,13 +8,18 @@ import { getQueueToken } from '@nestjs/bullmq';
 import { CreateStudentInput } from './dto/create-student.input';
 import { PaginationInput } from './dto/pagination.input';
 import { PaginatedStudents } from './dto/paginated.output';
-import { NotFoundException } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdateStudentInput } from './dto/update-student.input';
+import { ProducerService } from '../kafka/producer/producer.service';
 
 describe('EmployeeService', () => {
   let service: StudentService;
   let studentsRepository: Repository<Student>;
   let studentImportQueue: Queue;
+  let kafkaProducerService: ProducerService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,6 +42,12 @@ describe('EmployeeService', () => {
             add: jest.fn(),
           },
         },
+        {
+          provide: ProducerService,
+          useValue: {
+            produce: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -45,6 +56,7 @@ describe('EmployeeService', () => {
       getRepositoryToken(Student),
     );
     studentImportQueue = module.get<Queue>(getQueueToken('student-import'));
+    kafkaProducerService = module.get<ProducerService>(ProducerService);
   });
 
   it('should be defined', () => {
@@ -107,6 +119,44 @@ describe('EmployeeService', () => {
   });
 
   describe('findAll', () => {
+    it('should return all students', async () => {
+      // 1. Define the expected output
+      const students = [
+        {
+          id: '1',
+          firstName: 'John',
+          lastName: 'Doe',
+          dateOfBirth: new Date('2000-01-01'),
+          email: 'john.doe@example.com',
+          courseId: 'course-1',
+        },
+      ] as Student[];
+
+      // 2. Mock the repository method
+      jest.spyOn(studentsRepository, 'find').mockResolvedValue(students);
+
+      // 3. Call the method under test
+      const result = await service.findAll();
+
+      // 4. Assertions
+      expect(studentsRepository.find).toHaveBeenCalled();
+      expect(result).toEqual(students);
+    });
+
+    it('should throw an InternalServerErrorException if an error occurs', async () => {
+      // 1. Mock the repository method to throw an error
+      jest
+        .spyOn(studentsRepository, 'find')
+        .mockRejectedValue(new Error('Database error'));
+
+      // 2. Call the method under test and expect it to throw
+      await expect(service.findAll()).rejects.toThrow(
+        InternalServerErrorException,
+      );
+    });
+  });
+
+  describe('fetchPaginatedStudents', () => {
     it('should return paginated students', async () => {
       // 1. Define the input and expected output
       const paginationInput: PaginationInput = {
@@ -138,7 +188,7 @@ describe('EmployeeService', () => {
         .mockResolvedValue([students, totalRecords]);
 
       // 3. Call the method under test
-      const result = await service.findAll(paginationInput);
+      const result = await service.fetchPaginatedStudents(paginationInput);
 
       // 4. Assertions
       expect(studentsRepository.findAndCount).toHaveBeenCalledWith({
@@ -312,6 +362,43 @@ describe('EmployeeService', () => {
         where: { courseId },
       });
       expect(result).toEqual(students);
+    });
+  });
+
+  describe('filterStudentsByAge', () => {
+    it('should produce a Kafka message and return a success message', async () => {
+      // 1. Define the input
+      const minAge = 18;
+      const maxAge = 25;
+
+      // 2. Mock the Kafka producer method
+      jest.spyOn(kafkaProducerService, 'produce').mockResolvedValue(undefined);
+
+      // 3. Call the method under test
+      const result = await service.filterStudentsByAge(minAge, maxAge);
+
+      // 4. Assertions
+      expect(kafkaProducerService.produce).toHaveBeenCalledWith({
+        topic: 'student-filter',
+        messages: [
+          {
+            value: JSON.stringify({ minAge, maxAge }),
+          },
+        ],
+      });
+      expect(result).toEqual({ message: 'Filter process started' });
+    });
+
+    it('should throw an InternalServerErrorException if an error occurs', async () => {
+      // 1. Mock the Kafka producer method to throw an error
+      jest
+        .spyOn(kafkaProducerService, 'produce')
+        .mockRejectedValue(new Error('Kafka error'));
+
+      // 2. Call the method under test and expect it to throw
+      await expect(service.filterStudentsByAge(18, 25)).rejects.toThrow(
+        InternalServerErrorException,
+      );
     });
   });
 });

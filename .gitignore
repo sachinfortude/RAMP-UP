@@ -63,3 +63,4 @@ Thumbs.db
 .npm/
 
 backend/students-service/uploads
+backend/students-service/downloads

@@ -13,6 +13,7 @@ import { ExpressAdapter } from '@bull-board/express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validateEnv } from './config/env.validation'; // Import the Zod validation function
 import { HealthController } from './health/health.controller';
+import { KafkaModule } from './kafka/kafka.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { HealthController } from './health/health.controller';
       adapter: ExpressAdapter,
     }),
     StudentModule,
+    KafkaModule,
   ],
   controllers: [HealthController],
   providers: [],

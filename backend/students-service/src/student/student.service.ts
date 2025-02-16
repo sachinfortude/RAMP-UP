@@ -13,6 +13,7 @@ import { PaginationInput } from './dto/pagination.input';
 import { PaginatedStudents } from './dto/paginated.output';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
+import { ProducerService } from '../kafka/producer/producer.service';
 
 @Injectable()
 export class StudentService {
@@ -23,6 +24,7 @@ export class StudentService {
     private studentsRepository: Repository<Student>,
     @InjectQueue('student-import')
     private readonly studentImportQueue: Queue,
+    private readonly kafkaProducerService: ProducerService,
   ) {}
 
   async createStudentImportJob(filePath: string) {
@@ -57,7 +59,21 @@ export class StudentService {
     }
   }
 
-  async findAll(paginationInput: PaginationInput): Promise<PaginatedStudents> {
+  async findAll() {
+    try {
+      return await this.studentsRepository.find();
+    } catch (error) {
+      this.logger.error(
+        `Error fetching students: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException('Failed to fetch students');
+    }
+  }
+
+  async fetchPaginatedStudents(
+    paginationInput: PaginationInput,
+  ): Promise<PaginatedStudents> {
     try {
       const { page, limit } = paginationInput;
       const skip = (page - 1) * limit;
@@ -176,6 +192,23 @@ export class StudentService {
       throw new InternalServerErrorException(
         'Failed to fetch students for course',
       );
+    }
+  }
+
+  async filterStudentsByAge(minAge: number, maxAge: number) {
+    try {
+      await this.kafkaProducerService.produce({
+        topic: 'student-filter',
+        messages: [{ value: JSON.stringify({ minAge, maxAge }) }],
+      });
+
+      return { message: 'Filter process started' };
+    } catch (error) {
+      this.logger.error(
+        `Failed to filter students by age: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException(error.message);
     }
   }
 }

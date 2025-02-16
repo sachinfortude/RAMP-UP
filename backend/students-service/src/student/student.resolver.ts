@@ -32,7 +32,7 @@ export class StudentResolver {
   @Query(() => PaginatedStudents, { name: 'getAllStudents' })
   async findAll(@Args('paginationInput') paginationInput: PaginationInput) {
     try {
-      return await this.studentService.findAll(paginationInput);
+      return await this.studentService.fetchPaginatedStudents(paginationInput);
     } catch (error) {
       throw error;
     }
