@@ -17,10 +17,9 @@ export class StudentFilterConsumer implements OnModuleInit {
   async onModuleInit() {
     await this.kafkaConsumerService.consume(
       'student-filter-group', // Consumer group ID
-      { topic: 'student-filter', fromBeginning: true }, // Topic to subscribe to
+      { topic: 'student-filter' }, // Topic to subscribe to
       {
         eachMessage: async ({ message }) => {
-          console.log('consuming');
           this.logger.log(`Consuming message: ${message.value?.toString()}`);
           if (message.value) {
             const { minAge, maxAge } = JSON.parse(message.value.toString());
