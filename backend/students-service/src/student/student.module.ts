@@ -11,6 +11,7 @@ import { StudentGateway } from './student.gateway';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { KafkaModule } from 'src/kafka/kafka.module';
+import { StudentFilterConsumer } from './student-filter.consumer';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { KafkaModule } from 'src/kafka/kafka.module';
     CourseResolver,
     StudentImportProcessor,
     StudentGateway,
+    StudentFilterConsumer,
   ],
   controllers: [StudentController],
 })
