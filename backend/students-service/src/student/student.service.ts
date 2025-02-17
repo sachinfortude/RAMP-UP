@@ -208,7 +208,9 @@ export class StudentService {
         `Failed to filter students by age: ${error.message}`,
         error.stack,
       );
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        'Failed to filter students by age',
+      );
     }
   }
 }
