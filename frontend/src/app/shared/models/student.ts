@@ -4,6 +4,7 @@ export interface Student {
   lastName: string;
   email: string;
   dateOfBirth: string | Date;
+  age?: number;
 }
 
 export interface GetStudentsResponse {

@@ -34,6 +34,7 @@ export class StudentsService {
                 lastName
                 email
                 dateOfBirth
+                age
               }
               totalRecords
               totalPages

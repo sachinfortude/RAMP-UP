@@ -11,7 +11,6 @@ import {
 } from '@progress/kendo-angular-grid';
 import { KENDO_DIALOGS } from '@progress/kendo-angular-dialog';
 import { KENDO_BUTTON } from '@progress/kendo-angular-buttons';
-import { AgePipe } from '../../shared/pipes/age.pipe';
 import { Subscription } from 'rxjs';
 import { StudentsService } from '../../core/services/students.service';
 import { GridDataResult } from '@progress/kendo-angular-grid';
@@ -31,7 +30,7 @@ import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-students',
-  imports: [KENDO_GRID, AgePipe, KENDO_DIALOGS, NgIf, KENDO_BUTTON],
+  imports: [KENDO_GRID, KENDO_DIALOGS, NgIf, KENDO_BUTTON],
   templateUrl: './students.component.html',
   styleUrl: './students.component.css',
 })

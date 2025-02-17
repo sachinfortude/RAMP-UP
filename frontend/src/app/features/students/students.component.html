@@ -22,11 +22,11 @@
     editor="date"
     format="yyyy/MM/dd"
   ></kendo-grid-column>
-  <kendo-grid-column field="dateOfBirth" title="Age" [editable]="false">
-    <ng-template kendoGridCellTemplate let-dataItem>
-      {{ dataItem.dateOfBirth | age }}
-    </ng-template>
-  </kendo-grid-column>
+  <kendo-grid-column
+    field="age"
+    title="Age (In Years)"
+    [editable]="false"
+  ></kendo-grid-column>
   <kendo-grid-command-column title="Actions" [width]="220">
     <ng-template kendoGridCellTemplate let-isNew="isNew">
       <button kendoGridEditCommand [primary]="true">Edit</button>

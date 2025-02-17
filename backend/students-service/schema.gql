@@ -15,6 +15,9 @@ type Student {
   dateOfBirth: Date!
   courseId: String!
   course: Course!
+
+  """Calculated age of the student"""
+  age: Int!
 }
 
 """
