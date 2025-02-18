@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateStudentInput } from './dto/create-student.input';
@@ -28,185 +23,93 @@ export class StudentService {
   ) {}
 
   async createStudentImportJob(filePath: string) {
-    try {
-      const job = await this.studentImportQueue.add(
-        'importStudents',
-        { filePath },
-        { attempts: 3 },
-      );
-      return job;
-    } catch (error) {
-      this.logger.error(
-        `Failed to create student import job: ${error.message}`,
-        error.stack,
-      );
-      throw new InternalServerErrorException(
-        'Failed to create student import job',
-      );
-    }
+    const job = await this.studentImportQueue.add(
+      'importStudents',
+      { filePath },
+      { attempts: 3 },
+    );
+    return job;
   }
 
   async create(createStudentInput: CreateStudentInput): Promise<Student> {
-    try {
-      const student = this.studentsRepository.create(createStudentInput);
-      return await this.studentsRepository.save(student);
-    } catch (error) {
-      this.logger.error(
-        `Failed to create student: ${error.message}`,
-        error.stack,
-      );
-      throw new InternalServerErrorException('Failed to create student');
-    }
+    const student = this.studentsRepository.create(createStudentInput);
+    return await this.studentsRepository.save(student);
   }
 
   async findAll() {
-    try {
-      return await this.studentsRepository.find();
-    } catch (error) {
-      this.logger.error(
-        `Error fetching students: ${error.message}`,
-        error.stack,
-      );
-      throw new InternalServerErrorException('Failed to fetch students');
-    }
+    return await this.studentsRepository.find();
   }
 
   async fetchPaginatedStudents(
     paginationInput: PaginationInput,
   ): Promise<PaginatedStudents> {
-    try {
-      const { page, limit } = paginationInput;
-      const skip = (page - 1) * limit;
+    const { page, limit } = paginationInput;
+    const skip = (page - 1) * limit;
 
-      const [students, totalRecords] =
-        await this.studentsRepository.findAndCount({
-          skip,
-          take: limit,
-          order: {
-            createdAt: 'DESC',
-          },
-        });
+    const [students, totalRecords] = await this.studentsRepository.findAndCount(
+      {
+        skip,
+        take: limit,
+        order: { createdAt: 'DESC' },
+      },
+    );
 
-      return {
-        students,
-        totalRecords,
-        totalPages: Math.ceil(totalRecords / limit),
-      };
-    } catch (error) {
-      this.logger.error(
-        `Error fetching students: ${error.message}`,
-        error.stack,
-      );
-      throw new InternalServerErrorException('Failed to fetch students');
-    }
+    return {
+      students,
+      totalRecords,
+      totalPages: Math.ceil(totalRecords / limit),
+    };
   }
 
   async findOne(id: string): Promise<Student> {
-    try {
-      const student = await this.studentsRepository.findOne({ where: { id } });
+    const student = await this.studentsRepository.findOne({ where: { id } });
 
-      if (!student) {
-        this.logger.warn(`Student not found with ID: ${id}`);
-        throw new NotFoundException(`Record cannot find by id ${id}`);
-      }
-
-      return student;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error; // Re-throw NotFoundException
-      }
-      this.logger.error(
-        `Failed to fetch student with ID ${id}: ${error.message}`,
-        error.stack,
-      );
-      throw new InternalServerErrorException('Failed to fetch student');
+    if (!student) {
+      this.logger.warn(`Student not found with ID: ${id}`);
+      throw new NotFoundException(`Record cannot find by id ${id}`);
     }
+
+    return student;
   }
 
   async update(
     id: string,
     updateStudentInput: UpdateStudentInput,
   ): Promise<Student> {
-    try {
-      const student = await this.studentsRepository.preload({
-        ...updateStudentInput,
-      });
+    const student = await this.studentsRepository.preload({
+      ...updateStudentInput,
+    });
 
-      if (!student) {
-        this.logger.warn(`Student not found with ID: ${id}`);
-        throw new NotFoundException(`Record cannot find by id ${id}`);
-      }
-
-      return this.studentsRepository.save(student);
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      this.logger.error(
-        `Failed to update student with ID ${id}: ${error.message}`,
-        error.stack,
-      );
-      throw new InternalServerErrorException('Failed to update student');
+    if (!student) {
+      this.logger.warn(`Student not found with ID: ${id}`);
+      throw new NotFoundException(`Record cannot find by id ${id}`);
     }
+
+    return await this.studentsRepository.save(student);
   }
 
   async remove(id: string): Promise<Student> {
-    try {
-      let student = await this.studentsRepository.findOne({ where: { id } });
+    const student = await this.studentsRepository.findOne({ where: { id } });
 
-      if (!student) {
-        this.logger.warn(`Student not found with ID: ${id}`);
-        throw new NotFoundException(`Record cannot find by id ${id}`);
-      }
-
-      this.studentsRepository.remove(student);
-      return student;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error; // Re-throw NotFoundException
-      }
-      this.logger.error(
-        `Failed to delete student with ID ${id}: ${error.message}`,
-        error.stack,
-      );
-      throw new InternalServerErrorException('Failed to delete student');
+    if (!student) {
+      this.logger.warn(`Student not found with ID: ${id}`);
+      throw new NotFoundException(`Record cannot find by id ${id}`);
     }
+
+    this.studentsRepository.remove(student);
+    return student;
   }
 
   async forCourse(courseId: string): Promise<Student[]> {
-    try {
-      return await this.studentsRepository.find({
-        where: {
-          courseId,
-        },
-      });
-    } catch (error) {
-      this.logger.error(
-        `Failed to fetch students for course ID ${courseId}: ${error.message}`,
-        error.stack,
-      );
-      throw new InternalServerErrorException(
-        'Failed to fetch students for course',
-      );
-    }
+    return await this.studentsRepository.find({ where: { courseId } });
   }
 
   async filterStudentsByAge(minAge: number, maxAge: number) {
-    try {
-      await this.kafkaProducerService.produce({
-        topic: 'student-filter',
-        messages: [{ value: JSON.stringify({ minAge, maxAge }) }],
-      });
+    await this.kafkaProducerService.produce({
+      topic: 'student-filter',
+      messages: [{ value: JSON.stringify({ minAge, maxAge }) }],
+    });
 
-      return { message: 'Filter process started' };
-    } catch (error) {
-      this.logger.error(
-        `Failed to filter students by age: ${error.message}`,
-        error.stack,
-      );
-      throw new InternalServerErrorException(
-        'Failed to filter students by age',
-      );
-    }
+    return { message: 'Filter process started' };
   }
 }

@@ -22,52 +22,32 @@ export class StudentResolver {
   async createStudent(
     @Args('createStudentInput') createStudentInput: CreateStudentInput,
   ) {
-    try {
-      return await this.studentService.create(createStudentInput);
-    } catch (error) {
-      throw error;
-    }
+    return await this.studentService.create(createStudentInput);
   }
 
   @Query(() => PaginatedStudents, { name: 'getAllStudents' })
   async findAll(@Args('paginationInput') paginationInput: PaginationInput) {
-    try {
-      return await this.studentService.fetchPaginatedStudents(paginationInput);
-    } catch (error) {
-      throw error;
-    }
+    return await this.studentService.fetchPaginatedStudents(paginationInput);
   }
 
   @Query(() => Student, { name: 'getStudentById' })
   async findOne(@Args('id') id: string) {
-    try {
-      return await this.studentService.findOne(id);
-    } catch (error) {
-      throw error;
-    }
+    return await this.studentService.findOne(id);
   }
 
   @Mutation(() => Student)
   async updateStudent(
     @Args('updateStudentInput') updateStudentInput: UpdateStudentInput,
   ) {
-    try {
-      return await this.studentService.update(
-        updateStudentInput.id,
-        updateStudentInput,
-      );
-    } catch (error) {
-      throw error;
-    }
+    return await this.studentService.update(
+      updateStudentInput.id,
+      updateStudentInput,
+    );
   }
 
   @Mutation(() => Student)
   async removeStudent(@Args('id') id: string) {
-    try {
-      return await this.studentService.remove(id);
-    } catch (error) {
-      throw error;
-    }
+    return await this.studentService.remove(id);
   }
 
   @ResolveField(() => Course)

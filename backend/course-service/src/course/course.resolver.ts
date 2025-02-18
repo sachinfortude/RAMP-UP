@@ -19,52 +19,32 @@ export class CourseResolver {
   async createCourse(
     @Args('createCourseInput') createCourseInput: CreateCourseInput,
   ) {
-    try {
-      return await this.courseService.create(createCourseInput);
-    } catch (error) {
-      throw error;
-    }
+    return await this.courseService.create(createCourseInput);
   }
 
   @Query(() => [Course], { name: 'getAllCourses' })
   async findAll() {
-    try {
-      return await this.courseService.findAll();
-    } catch (error) {
-      throw error;
-    }
+    return await this.courseService.findAll();
   }
 
   @Query(() => Course, { name: 'getCourseById' })
   async findOne(@Args('id') id: string) {
-    try {
-      return await this.courseService.findOne(id);
-    } catch (error) {
-      throw error;
-    }
+    return await this.courseService.findOne(id);
   }
 
   @Mutation(() => Course)
   async updateCourse(
     @Args('updateCourseInput') updateCourseInput: UpdateCourseInput,
   ) {
-    try {
-      return await this.courseService.update(
-        updateCourseInput.id,
-        updateCourseInput,
-      );
-    } catch (error) {
-      throw error;
-    }
+    return await this.courseService.update(
+      updateCourseInput.id,
+      updateCourseInput,
+    );
   }
 
   @Mutation(() => Course)
   async removeCourse(@Args('id') id: string) {
-    try {
-      return await this.courseService.remove(id);
-    } catch (error) {
-      throw error;
-    }
+    return await this.courseService.remove(id);
   }
 
   @ResolveReference()
