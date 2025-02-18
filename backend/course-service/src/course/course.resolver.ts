@@ -16,36 +16,59 @@ export class CourseResolver {
   constructor(private readonly courseService: CourseService) {}
 
   @Mutation(() => Course)
-  createCourse(
+  async createCourse(
     @Args('createCourseInput') createCourseInput: CreateCourseInput,
   ) {
-    return this.courseService.create(createCourseInput);
+    try {
+      return await this.courseService.create(createCourseInput);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Query(() => [Course], { name: 'getAllCourses' })
-  findAll() {
-    return this.courseService.findAll();
+  async findAll() {
+    try {
+      return await this.courseService.findAll();
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Query(() => Course, { name: 'getCourseById' })
-  findOne(@Args('id') id: string) {
-    return this.courseService.findOne(id);
+  async findOne(@Args('id') id: string) {
+    try {
+      return await this.courseService.findOne(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Mutation(() => Course)
-  updateCourse(
+  async updateCourse(
     @Args('updateCourseInput') updateCourseInput: UpdateCourseInput,
   ) {
-    return this.courseService.update(updateCourseInput.id, updateCourseInput);
+    try {
+      return await this.courseService.update(
+        updateCourseInput.id,
+        updateCourseInput,
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Mutation(() => Course)
-  removeCourse(@Args('id') id: string) {
-    return this.courseService.remove(id);
+  async removeCourse(@Args('id') id: string) {
+    try {
+      return await this.courseService.remove(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @ResolveReference()
-  resolveReference(reference: { __typename: string; id: string }) {
-    return this.courseService.findOne(reference.id);
+  async resolveReference(reference: { __typename: string; id: string }) {
+    return await this.courseService.findOne(reference.id);
   }
 }

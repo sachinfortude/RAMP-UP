@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCourseInput } from './dto/create-course.input';
@@ -7,53 +12,86 @@ import { Course } from './entities/course.entity';
 
 @Injectable()
 export class CourseService {
+  private readonly logger = new Logger(CourseService.name);
+
   constructor(
     @InjectRepository(Course)
     private courseRepository: Repository<Course>,
   ) {}
 
-  create(createCourseInput: CreateCourseInput): Promise<Course> {
-    let course = this.courseRepository.create(createCourseInput);
-    return this.courseRepository.save(course);
+  async create(createCourseInput: CreateCourseInput): Promise<Course> {
+    try {
+      let course = this.courseRepository.create(createCourseInput);
+      return await this.courseRepository.save(course);
+    } catch (error) {
+      this.logger.error(`Error creating a course: ${error.message}`);
+      throw new InternalServerErrorException('Error while creating course');
+    }
   }
 
-  findAll(): Promise<Course[]> {
-    return this.courseRepository.find();
+  async findAll(): Promise<Course[]> {
+    try {
+      return await this.courseRepository.find();
+    } catch (error) {
+      this.logger.error(`Error while fetching courses: ${error.message}`);
+      throw new InternalServerErrorException('Error while fetching courses');
+    }
   }
 
   async findOne(id: string): Promise<Course> {
-    const course = await this.courseRepository.findOne({ where: { id } });
+    try {
+      const course = await this.courseRepository.findOne({ where: { id } });
 
-    if (!course) {
-      throw new NotFoundException(`Record cannot find by id ${id}`);
+      if (!course) {
+        throw new NotFoundException(`Record not found with id ${id}`);
+      }
+
+      return course;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Error while fetching the course');
     }
-
-    return course;
   }
 
   async update(
     id: string,
     updateCourseInput: UpdateCourseInput,
   ): Promise<Course> {
-    const course = await this.courseRepository.preload({
-      ...updateCourseInput,
-    });
+    try {
+      const course = await this.courseRepository.preload({
+        ...updateCourseInput,
+      });
 
-    if (!course) {
-      throw new NotFoundException(`Record cannot find by id ${id}`);
+      if (!course) {
+        throw new NotFoundException(`Record not found with id ${id}`);
+      }
+
+      return await this.courseRepository.save(course);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Error while updating the course');
     }
-
-    return this.courseRepository.save(course);
   }
 
   async remove(id: string): Promise<Course> {
-    let course = await this.courseRepository.findOne({ where: { id } });
+    try {
+      let course = await this.courseRepository.findOne({ where: { id } });
 
-    if (!course) {
-      throw new NotFoundException(`Record cannot find by id ${id}`);
+      if (!course) {
+        throw new NotFoundException(`Record not found with id ${id}`);
+      }
+
+      this.courseRepository.remove(course);
+      return course;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Error while deleting the course');
     }
-
-    this.courseRepository.remove(course);
-    return course;
   }
 }
