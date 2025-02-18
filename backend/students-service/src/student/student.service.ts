@@ -128,23 +128,19 @@ export class StudentService {
     updateStudentInput: UpdateStudentInput,
   ): Promise<Student> {
     try {
-      let student = await this.studentsRepository.findOne({ where: { id } });
+      const student = await this.studentsRepository.preload({
+        ...updateStudentInput,
+      });
 
       if (!student) {
         this.logger.warn(`Student not found with ID: ${id}`);
         throw new NotFoundException(`Record cannot find by id ${id}`);
       }
 
-      student.firstName = updateStudentInput.firstName;
-      student.lastName = updateStudentInput.lastName;
-      student.dateOfBirth = updateStudentInput.dateOfBirth;
-      student.email = updateStudentInput.email;
-      student.courseId = updateStudentInput.courseId;
-
       return this.studentsRepository.save(student);
     } catch (error) {
       if (error instanceof NotFoundException) {
-        throw error; // Re-throw NotFoundException
+        throw error;
       }
       this.logger.error(
         `Failed to update student with ID ${id}: ${error.message}`,

@@ -35,15 +35,13 @@ export class CourseService {
     id: string,
     updateCourseInput: UpdateCourseInput,
   ): Promise<Course> {
-    let course = await this.courseRepository.findOne({ where: { id } });
+    const course = await this.courseRepository.preload({
+      ...updateCourseInput,
+    });
 
     if (!course) {
       throw new NotFoundException(`Record cannot find by id ${id}`);
     }
-
-    course.name = updateCourseInput.name;
-    course.description = updateCourseInput.description;
-    course.credits = updateCourseInput.credits;
 
     return this.courseRepository.save(course);
   }

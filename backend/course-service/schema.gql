@@ -27,8 +27,8 @@ input CreateCourseInput {
 }
 
 input UpdateCourseInput {
-  id: String!
-  name: String!
+  name: String
   description: String
-  credits: Int!
+  credits: Int
+  id: String!
 }

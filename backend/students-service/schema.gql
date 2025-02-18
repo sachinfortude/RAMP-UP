@@ -56,10 +56,10 @@ input CreateStudentInput {
 }
 
 input UpdateStudentInput {
+  firstName: String
+  lastName: String
+  email: String
+  dateOfBirth: Date
+  courseId: String
   id: String!
-  firstName: String!
-  lastName: String!
-  email: String!
-  dateOfBirth: Date!
-  courseId: String!
 }
