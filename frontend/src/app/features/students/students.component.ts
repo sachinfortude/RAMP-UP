@@ -14,6 +14,8 @@ import { KENDO_BUTTON } from '@progress/kendo-angular-buttons';
 import { Subscription } from 'rxjs';
 import { StudentsService } from '../../core/services/students.service';
 import { GridDataResult } from '@progress/kendo-angular-grid';
+import { KENDO_NOTIFICATION } from '@progress/kendo-angular-notification';
+import { NotificationService } from '@progress/kendo-angular-notification';
 import {
   AbstractControl,
   FormControl,
@@ -30,7 +32,7 @@ import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-students',
-  imports: [KENDO_GRID, KENDO_DIALOGS, NgIf, KENDO_BUTTON],
+  imports: [KENDO_GRID, KENDO_DIALOGS, NgIf, KENDO_BUTTON, KENDO_NOTIFICATION],
   templateUrl: './students.component.html',
   styleUrl: './students.component.css',
 })
@@ -47,7 +49,8 @@ export class StudentsComponent implements OnInit, OnDestroy {
 
   constructor(
     private studentsService: StudentsService,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -137,10 +140,24 @@ export class StudentsComponent implements OnInit, OnDestroy {
       this.studentsService.createStudent(reqBody).subscribe({
         next: (res) => {
           console.log('Student created successfully', res);
+          this.notificationService.show({
+            content: 'Student created successfully',
+            hideAfter: 600,
+            position: { horizontal: 'right', vertical: 'top' },
+            animation: { type: 'fade', duration: 400 },
+            type: { style: 'success', icon: true },
+          });
           this.fetchStudents();
         },
         error: (err) => {
           console.log('Error occurred during creating the student', err);
+          this.notificationService.show({
+            content: 'Error occurred during creating the student',
+            hideAfter: 600,
+            position: { horizontal: 'right', vertical: 'top' },
+            animation: { type: 'fade', duration: 400 },
+            type: { style: 'error', icon: true },
+          });
         },
       });
     } else {
@@ -155,10 +172,24 @@ export class StudentsComponent implements OnInit, OnDestroy {
       this.studentsService.updateStudent(reqBody).subscribe({
         next: (res) => {
           console.log('Student updated successfully', res);
+          this.notificationService.show({
+            content: 'Student updated successfully',
+            hideAfter: 600,
+            position: { horizontal: 'right', vertical: 'top' },
+            animation: { type: 'fade', duration: 400 },
+            type: { style: 'success', icon: true },
+          });
           this.fetchStudents();
         },
         error: (err) => {
           console.log('Error occurred during updating the student', err);
+          this.notificationService.show({
+            content: 'Error occurred during updating the student',
+            hideAfter: 600,
+            position: { horizontal: 'right', vertical: 'top' },
+            animation: { type: 'fade', duration: 400 },
+            type: { style: 'error', icon: true },
+          });
         },
       });
     }
@@ -192,6 +223,13 @@ export class StudentsComponent implements OnInit, OnDestroy {
       next: (res) => {
         console.log('Student deleted successfully', res);
         // this.fetchStudents();
+        this.notificationService.show({
+          content: 'Student deleted successfully',
+          hideAfter: 600,
+          position: { horizontal: 'right', vertical: 'top' },
+          animation: { type: 'fade', duration: 400 },
+          type: { style: 'success', icon: true },
+        });
         this.students = {
           data: this.students.data.filter(
             (student) => student.id !== removeStudentId
@@ -202,6 +240,13 @@ export class StudentsComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.log('Error occurred during deleting the student', err);
+        this.notificationService.show({
+          content: 'Error occurred during deleting the student',
+          hideAfter: 600,
+          position: { horizontal: 'right', vertical: 'top' },
+          animation: { type: 'fade', duration: 400 },
+          type: { style: 'error', icon: true },
+        });
       },
     });
   }
