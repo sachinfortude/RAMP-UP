@@ -20,12 +20,8 @@ export class StudentController {
   @Post('import')
   @UseInterceptors(FileUploadInterceptor)
   async importStudents(@UploadedFile() file: Express.Multer.File) {
-    try {
-      const job = await this.studentsService.createStudentImportJob(file.path);
-      return { jobId: job.id };
-    } catch (error) {
-      throw error;
-    }
+    const job = await this.studentsService.createStudentImportJob(file.path);
+    return { jobId: job.id };
   }
 
   @Post('filter')
@@ -33,11 +29,7 @@ export class StudentController {
     @Body('minAge') minAge: number,
     @Body('maxAge') maxAge: number,
   ) {
-    try {
-      return await this.studentsService.filterStudentsByAge(minAge, maxAge);
-    } catch (error) {
-      throw error;
-    }
+    return await this.studentsService.filterStudentsByAge(minAge, maxAge);
   }
 
   @Get('download')
