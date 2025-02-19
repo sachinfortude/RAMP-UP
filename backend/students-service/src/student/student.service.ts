@@ -104,6 +104,20 @@ export class StudentService {
     return await this.studentsRepository.find({ where: { courseId } });
   }
 
+  async notifyJobCompleted(message: string) {
+    await this.kafkaProducerService.produce({
+      topic: 'student-import',
+      messages: [{ value: JSON.stringify({ status: 'completed', message }) }],
+    });
+  }
+
+  async notifyJobFailed(message: string) {
+    await this.kafkaProducerService.produce({
+      topic: 'student-import',
+      messages: [{ value: JSON.stringify({ status: 'failed', message }) }],
+    });
+  }
+
   async filterStudentsByAge(minAge: number, maxAge: number) {
     await this.kafkaProducerService.produce({
       topic: 'student-filter',

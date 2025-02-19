@@ -1,7 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConsumerService } from 'src/kafka/consumer/consumer.service';
 import { StudentService } from './student.service';
-import { StudentGateway } from './student.gateway';
 import * as xlsx from 'xlsx';
 
 @Injectable()
@@ -11,7 +10,6 @@ export class StudentFilterConsumer implements OnModuleInit {
   constructor(
     private readonly kafkaConsumerService: ConsumerService,
     private readonly studentService: StudentService,
-    private readonly studentGateway: StudentGateway,
   ) {}
 
   async onModuleInit() {
@@ -44,8 +42,7 @@ export class StudentFilterConsumer implements OnModuleInit {
     const filePath = `./downloads/filtered-students-${Date.now()}.xlsx`;
     this.generateExcelFile(filteredStudents, filePath);
 
-    // Notify the frontend via WebSocket
-    this.studentGateway.notifyFileReady(filePath);
+    // TODO: Notify the frontend via WebSocket
   }
 
   calculateAge(dateOfBirth: Date): number {

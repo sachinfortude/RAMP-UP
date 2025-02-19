@@ -8,13 +8,13 @@ import {
 import { Server } from 'socket.io';
 
 @WebSocketGateway({ cors: true })
-export class StudentGateway
+export class NotificationGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer()
   server: Server;
 
-  private readonly logger = new Logger(StudentGateway.name);
+  private readonly logger = new Logger(NotificationGateway.name);
 
   handleConnection(client: any) {
     this.logger.log(`Client connected: ${client.id}`);
@@ -30,9 +30,5 @@ export class StudentGateway
 
   notifyJobFailed(message: string) {
     this.server.emit('jobFailed', { message });
-  }
-
-  notifyFileReady(filePath: string) {
-    this.server.emit('fileReady', { filePath });
   }
 }

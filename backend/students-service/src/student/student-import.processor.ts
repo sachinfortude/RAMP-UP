@@ -3,7 +3,6 @@ import { StudentService } from './student.service';
 import { Job } from 'bullmq';
 import * as xlsx from 'xlsx';
 import { CreateStudentInput } from './dto/create-student.input';
-import { StudentGateway } from './student.gateway';
 import * as fs from 'fs';
 import { Logger } from '@nestjs/common';
 
@@ -15,10 +14,7 @@ import { Logger } from '@nestjs/common';
 export class StudentImportProcessor extends WorkerHost {
   private readonly logger = new Logger(StudentImportProcessor.name);
 
-  constructor(
-    private readonly studentsService: StudentService,
-    private readonly studentGateway: StudentGateway,
-  ) {
+  constructor(private readonly studentsService: StudentService) {
     super();
   }
 
@@ -28,7 +24,7 @@ export class StudentImportProcessor extends WorkerHost {
 
     if (!fs.existsSync(filePath)) {
       this.logger.log(`File not found: ${filePath}`);
-      this.studentGateway.notifyJobFailed(
+      await this.studentsService.notifyJobFailed(
         'Student import failed: File not found!',
       );
       throw new Error('File not found');
@@ -52,10 +48,12 @@ export class StudentImportProcessor extends WorkerHost {
         await this.studentsService.create(student);
       }
       this.logger.log('Students data imported successfully');
-      this.studentGateway.notifyJobCompleted('Students imported successfully!');
+      await this.studentsService.notifyJobCompleted(
+        'Students imported successfully!',
+      );
     } catch (error) {
       this.logger.log(`Error importing students: ${error.message}`);
-      this.studentGateway.notifyJobFailed('Student import failed!');
+      await this.studentsService.notifyJobFailed('Student import failed!');
       throw error; // Retry the job
     }
   }
