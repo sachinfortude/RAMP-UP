@@ -1,0 +1,62 @@
+<div class="filter-container">
+  @if(!isOpen){
+  <button
+    kendoButton
+    [svgIcon]="svgFilter"
+    (click)="open()"
+    [disabled]="!hasStudents()"
+  >
+    Filter
+  </button>
+  } @else {
+  <kendo-dialog
+    title="Filter Students by Age"
+    (close)="close('close')"
+    [minWidth]="250"
+    [width]="450"
+  >
+    <form (ngSubmit)="filterStudents()">
+      <div class="form-group">
+        <label for="minAge">Min Age</label>
+        <input
+          type="number"
+          id="minAge"
+          [(ngModel)]="minAge"
+          name="minAge"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="maxAge">Max Age</label>
+        <input
+          type="number"
+          id="maxAge"
+          [(ngModel)]="maxAge"
+          name="maxAge"
+          required
+        />
+      </div>
+
+      <kendo-dialog-actions>
+        <button kendoButton (click)="close('cancel')" type="button">
+          Cancel
+        </button>
+        <button
+          kendoButton
+          type="submit"
+          themeColor="primary"
+          [disabled]="isSubmitting"
+        >
+          <kendo-loader
+            *ngIf="isSubmitting"
+            size="small"
+            themeColor="secondary"
+          >
+          </kendo-loader>
+          Filter
+        </button>
+      </kendo-dialog-actions>
+    </form>
+  </kendo-dialog>
+  }
+</div>

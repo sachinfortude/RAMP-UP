@@ -10,14 +10,19 @@ import { StudentImportProcessor } from './student-import.processor';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { KafkaModule } from 'src/kafka/kafka.module';
-import { StudentFilterConsumer } from './student-filter.consumer';
+import { StudentFilterProcessor } from './student-filter.processor';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Student]),
     BullModule.registerQueue({ name: 'student-import' }),
+    BullModule.registerQueue({ name: 'student-filter' }),
     BullBoardModule.forFeature({
       name: 'student-import',
+      adapter: BullMQAdapter,
+    }),
+    BullBoardModule.forFeature({
+      name: 'student-filter',
       adapter: BullMQAdapter,
     }),
     KafkaModule,
@@ -27,7 +32,7 @@ import { StudentFilterConsumer } from './student-filter.consumer';
     StudentService,
     CourseResolver,
     StudentImportProcessor,
-    StudentFilterConsumer,
+    StudentFilterProcessor,
   ],
   controllers: [StudentController],
 })

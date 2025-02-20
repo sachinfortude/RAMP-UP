@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { CreateStudentInput } from './dto/create-student.input';
 import { UpdateStudentInput } from './dto/update-student.input';
 import { Student } from './entities/student.entity';
@@ -19,6 +19,8 @@ export class StudentService {
     private studentsRepository: Repository<Student>,
     @InjectQueue('student-import')
     private readonly studentImportQueue: Queue,
+    @InjectQueue('student-filter')
+    private readonly studentFilterQueue: Queue,
     private readonly kafkaProducerService: ProducerService,
   ) {}
 
@@ -118,12 +120,40 @@ export class StudentService {
     });
   }
 
-  async filterStudentsByAge(minAge: number, maxAge: number) {
+  async createStudentFilterJob(minAge: number, maxAge: number) {
+    const job = await this.studentFilterQueue.add(
+      'filterStudents',
+      { minAge, maxAge },
+      { attempts: 3 },
+    );
+    return job;
+  }
+
+  async filterStudentsByAge(
+    minAge: number,
+    maxAge: number,
+  ): Promise<Student[]> {
+    const currentDate = new Date();
+    const minBirthDate = new Date(
+      currentDate.getFullYear() - maxAge,
+      currentDate.getMonth(),
+      currentDate.getDate(),
+    );
+    const maxBirthDate = new Date(
+      currentDate.getFullYear() - minAge,
+      currentDate.getMonth(),
+      currentDate.getDate(),
+    );
+
+    return await this.studentsRepository.find({
+      where: { dateOfBirth: Between(minBirthDate, maxBirthDate) },
+    });
+  }
+
+  async notifyFileReady(filePath: string) {
     await this.kafkaProducerService.produce({
       topic: 'student-filter',
-      messages: [{ value: JSON.stringify({ minAge, maxAge }) }],
+      messages: [{ value: JSON.stringify({ filePath }) }],
     });
-
-    return { message: 'Filter process started' };
   }
 }

@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { FileUploadInterceptor } from 'src/common/interceptors/file-upload.interceptor';
-import * as fs from 'fs';
 import { Response } from 'express';
+import * as fs from 'fs';
 
 @Controller('student')
 export class StudentController {
@@ -24,12 +24,16 @@ export class StudentController {
     return { jobId: job.id };
   }
 
-  @Post('filter')
-  async filterStudentsByAge(
-    @Body('minAge') minAge: number,
-    @Body('maxAge') maxAge: number,
+  @Get('filter')
+  async filterStudents(
+    @Query('minAge') minAge: number,
+    @Query('maxAge') maxAge: number,
   ) {
-    return await this.studentsService.filterStudentsByAge(minAge, maxAge);
+    const job = await this.studentsService.createStudentFilterJob(
+      minAge,
+      maxAge,
+    );
+    return { jobId: job.id };
   }
 
   @Get('download')

@@ -31,6 +31,15 @@ export class WebsocketService {
     });
   }
 
+  // Listen for file ready events
+  onFileReady(): Observable<{ filePath: string }> {
+    return new Observable((observer) => {
+      this.socket.on('fileReady', (data: { filePath: string }) => {
+        observer.next(data);
+      });
+    });
+  }
+
   // Disconnect WebSocket
   disconnect() {
     if (this.socket) {

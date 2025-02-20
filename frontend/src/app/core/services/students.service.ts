@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map, Observable } from 'rxjs';
 import { GetStudentsResponse, Student } from '../../shared/models/student';
@@ -13,6 +13,7 @@ import { environment } from '../../../environments/environment';
 })
 export class StudentsService {
   private fileUploadURL = environment.fileUploadUrl;
+  studentCount = signal(0); // Using signal to track student count
 
   constructor(private readonly apollo: Apollo, private http: HttpClient) {}
 
@@ -45,12 +46,14 @@ export class StudentsService {
       })
       .valueChanges.pipe(
         map((res) => {
+          const totalRecords = res.data.getAllStudents.totalRecords;
+          this.studentCount.set(totalRecords); // ✅ Update signal
           return {
             data: res.data.getAllStudents.students.map((student) => ({
               ...student,
               dateOfBirth: new Date(student.dateOfBirth), // Convert to JS Date object
             })),
-            total: res.data.getAllStudents.totalRecords,
+            total: totalRecords,
           };
         })
       );
@@ -117,5 +120,20 @@ export class StudentsService {
         },
       })
       .pipe(map((result: any) => result.data.removeStudent));
+  }
+
+  filterStudents(minAge: number, maxAge: number) {
+    return this.http.get(`${this.fileUploadURL}/student/filter`, {
+      params: { minAge, maxAge },
+    });
+  }
+
+  downloadFile(filePath: string) {
+    return this.http.get(
+      `${this.fileUploadURL}/student/download?filePath=${filePath}`,
+      {
+        responseType: 'blob', // Important for file downloads
+      }
+    );
   }
 }
