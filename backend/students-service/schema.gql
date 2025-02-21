@@ -34,11 +34,17 @@ type PaginatedStudents {
 type Query {
   getAllStudents(paginationInput: PaginationInput!): PaginatedStudents!
   getStudentById(id: String!): Student!
+  filterStudents(filterStudentsInput: FilterStudentsInput!): String!
 }
 
 input PaginationInput {
   page: Int! = 1
   limit: Int! = 10
+}
+
+input FilterStudentsInput {
+  minAge: Int!
+  maxAge: Int!
 }
 
 type Mutation {

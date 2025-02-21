@@ -13,6 +13,7 @@ import { UpdateStudentInput } from './dto/update-student.input';
 import { Course } from './entities/course.entity';
 import { PaginationInput } from './dto/pagination.input';
 import { PaginatedStudents } from './dto/paginated.output';
+import { FilterStudentsInput } from './dto/filter-students.input';
 
 @Resolver(() => Student)
 export class StudentResolver {
@@ -33,6 +34,18 @@ export class StudentResolver {
   @Query(() => Student, { name: 'getStudentById' })
   async findOne(@Args('id') id: string) {
     return await this.studentService.findOne(id);
+  }
+
+  @Query(() => String, { name: 'filterStudents' })
+  async filterStudents(
+    @Args('filterStudentsInput') filterStudentsInput: FilterStudentsInput,
+  ) {
+    const { minAge, maxAge } = filterStudentsInput;
+    const job = await this.studentService.createStudentFilterJob(
+      minAge,
+      maxAge,
+    );
+    return job.id;
   }
 
   @Mutation(() => Student)

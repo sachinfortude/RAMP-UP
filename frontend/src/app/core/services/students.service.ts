@@ -123,8 +123,18 @@ export class StudentsService {
   }
 
   filterStudents(minAge: number, maxAge: number) {
-    return this.http.get(`${this.fileUploadURL}/student/filter`, {
-      params: { minAge, maxAge },
+    return this.apollo.query({
+      query: gql`
+        query FilterStudents($filterStudentsInput: FilterStudentsInput!) {
+          filterStudents(filterStudentsInput: $filterStudentsInput)
+        }
+      `,
+      variables: {
+        filterStudentsInput: {
+          minAge,
+          maxAge,
+        },
+      },
     });
   }
 

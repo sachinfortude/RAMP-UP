@@ -24,18 +24,6 @@ export class StudentController {
     return { jobId: job.id };
   }
 
-  @Get('filter')
-  async filterStudents(
-    @Query('minAge') minAge: number,
-    @Query('maxAge') maxAge: number,
-  ) {
-    const job = await this.studentsService.createStudentFilterJob(
-      minAge,
-      maxAge,
-    );
-    return { jobId: job.id };
-  }
-
   @Get('download')
   async downloadFile(
     @Query('filePath') filePath: string,

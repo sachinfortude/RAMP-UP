@@ -135,9 +135,9 @@ export class StudentService {
   ): Promise<Student[]> {
     const currentDate = new Date();
     const minBirthDate = new Date(
-      currentDate.getFullYear() - maxAge,
+      currentDate.getFullYear() - maxAge - 1,
       currentDate.getMonth(),
-      currentDate.getDate(),
+      currentDate.getDate() + 1,
     );
     const maxBirthDate = new Date(
       currentDate.getFullYear() - minAge,
